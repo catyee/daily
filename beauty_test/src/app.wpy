@@ -4,8 +4,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  // justify-content: space-between;
   box-sizing: border-box;
+}
+.height10 {
+  height: 10rpx;
+  width: 100%;
+}
+.height20 {
+  height: 20rpx;
+  width: 100%;
+}
+.height40 {
+  height: 40rpx;
+  width: 100%;
+}
+.height100 {
+  height: 100rpx;
+  width: 100%;
 }
 </style>
 
@@ -17,18 +33,20 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/index'
+      'pages/index',
     ],
+
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#e9be2b',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: '#fff'
+      navigationBarTextStyle: 'black'
     }
   }
 
   globalData = {
-    userInfo: null
+    screenWidth: null,
+    screenHeight: null
   }
 
   constructor () {
@@ -36,8 +54,15 @@ export default class extends wepy.app {
     this.use('requestfix')
   }
 
+  // 监听小程序初始化
   onLaunch() {
-    this.testAsync()
+    let self = this;
+    wx.getSystemInfo({
+      success: function(res) {
+        self.globalData.screenWidth = res.windowWidth;
+        self.globalData.screenHeight = res.windowHeight;
+      }
+    })
   }
 
   sleep (s) {
@@ -48,10 +73,6 @@ export default class extends wepy.app {
     })
   }
 
-  async testAsync () {
-    const data = await this.sleep(3)
-    console.log(data)
-  }
 
   getUserInfo(cb) {
     const that = this
