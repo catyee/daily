@@ -98,9 +98,11 @@ page {
         </view> 
       </view>
       <view class="height40"></view>
-      <view>
+      <view wx:if="{{noFaceTip && picFile}}">
+        <view class="height40"></view>
         <text>没有检测到人脸哦...😭<text>
       </view>
+      <view class="height100"></view>
       <view> 
         <button @tap.stop="uploadPic">
           <i wx:if="{{!picFile}}">
@@ -132,7 +134,8 @@ export default class Index extends wepy.page {
     picFile: null,
     picWidth: 70,
     picHeight: 0,
-    deleteClicked: false
+    deleteClicked: false,
+    noFaceTip: false
   };
 
   computed = {
@@ -216,6 +219,13 @@ export default class Index extends wepy.page {
       success: function(res) {
         wx.hideLoading();
         console.log(res)
+        if(res.statusCode === 200) {
+          var data = JSON.parse(res.data);
+          if(!data.faces.length) {
+            self.noFaceTip = true;
+            self.$apply();
+          }
+        }
       },
       fail: function(res) {
         wx.hideLoading();
